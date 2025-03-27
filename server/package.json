@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
-    "seed": "node seeders/seed.js", 
+    "seed": "node seeders/seed.js",
     "generate-jwt": "node scripts/generate-jwt.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -32,6 +32,6 @@
     "mongoose": "^8.0.3"
   },
   "devDependencies": {
-    "nodemon": "^3.0.2"
+    "nodemon": "^3.1.9"
   }
 }
