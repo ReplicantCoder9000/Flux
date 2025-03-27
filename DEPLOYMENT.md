@@ -64,6 +64,7 @@ This guide provides step-by-step instructions for deploying the Flux Image Gener
 
 ## Triggering Deployments
 
+
 You can trigger a new deployment of the client application using the Render deploy hook:
 
 ```bash
