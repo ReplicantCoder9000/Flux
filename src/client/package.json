@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "echo \"No tests configured yet\" && exit 0",
+    "test:ci": "npm run lint && npm test && npm run build"
   },
   "dependencies": {
     "@apollo/client": "^3.8.8",
