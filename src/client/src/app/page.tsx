@@ -26,6 +26,30 @@ const GENERATE_IMAGE = gql`
   }
 `;
 
+// GraphQL mutation for saving an image
+const SAVE_IMAGE = gql`
+  mutation SaveImage(
+    $prompt: String!
+    $style: String
+    $imageUrl: String!
+    $predictionId: String!
+  ) {
+    saveImage(
+      prompt: $prompt
+      style: $style
+      imageUrl: $imageUrl
+      predictionId: $predictionId
+    ) {
+      _id
+      prompt
+      style
+      imageUrl
+      predictionId
+      createdAt
+    }
+  }
+`;
+
 // GraphQL query for user images
 const GET_USER_IMAGES = gql`
   query GetUserImages {
@@ -54,12 +78,32 @@ export default function Home() {
     fetchPolicy: 'network-only'
   });
 
+  const [saveImage] = useMutation(SAVE_IMAGE, {
+    onCompleted: () => {
+      // Refetch images after saving a new one
+      if (isLoggedIn) {
+        refetchImages();
+      }
+    },
+    onError: (error: any) => {
+      console.error('Error saving image:', error);
+    }
+  });
+
   const [generateImage] = useMutation(GENERATE_IMAGE, {
     onCompleted: (data: GenerateImageData) => {
       setGeneratedImage(data.generateImage.imageUrl);
-      // Refetch images after generating a new one
-      if (isLoggedIn) {
-        refetchImages();
+      
+      // Save the generated image to the database
+      if (isLoggedIn && data.generateImage.imageUrl && data.generateImage.predictionId) {
+        saveImage({
+          variables: {
+            prompt,
+            style,
+            imageUrl: data.generateImage.imageUrl,
+            predictionId: data.generateImage.predictionId
+          }
+        });
       }
       setIsLoading(false);
     },
