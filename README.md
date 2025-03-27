@@ -101,8 +101,8 @@ The application is configured for deployment on Render with MongoDB Atlas:
 1. Create a MongoDB Atlas cluster and get your connection string
 2. Deploy the server as a Web Service on Render
 3. Deploy the client as a Static Site on Render
-4. Set the client's build command to `cd client && npm install && npm run build`
-5. Set the client's publish directory to `client/.next`
+4. Set the client's build command to `cd src/client && npm install && npm run build`
+5. Set the client's publish directory to `src/client/.next`
 6. For detailed deployment instructions, see [DEPLOYMENT.md](./DEPLOYMENT.md)
 
 ## API Usage

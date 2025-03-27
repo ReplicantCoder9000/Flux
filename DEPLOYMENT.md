@@ -48,8 +48,8 @@ This guide provides step-by-step instructions for deploying the Flux Image Gener
 3. Configure the service:
    - **Name**: flux-image-generator-client
    - **Root Directory**: .
-   - **Build Command**: `cd client && npm install && npm run build`
-   - **Publish Directory**: `client/.next`
+   - **Build Command**: `cd src/client && npm install && npm run build`
+   - **Publish Directory**: `src/client/.next`
    - **Advanced** > **Add Environment Variable**:
      - `NEXT_PUBLIC_API_URL`: The URL of your server + `/graphql` (e.g., https://flux-image-generator-server.onrender.com/graphql)
 4. Click "Create Static Site"
