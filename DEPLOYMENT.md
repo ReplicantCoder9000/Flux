@@ -85,8 +85,22 @@ This deployment setup uses a decoupled architecture:
 ## Step 4: Update CORS Settings
 
 1. Go back to your server service in Render
-2. Add/update the `CLIENT_URL` environment variable with the URL of your deployed client
+2. Add/update the `CLIENT_URL` environment variable with the URL of your deployed client:
+   - Set `CLIENT_URL` to `https://flux-image-generator-client.onrender.com`
+   - This is critical for CORS to work correctly
 3. Restart the server service
+
+### CORS Error Explanation
+
+If you see this error in the browser console:
+```
+Access to fetch at 'https://flux-7gb7.onrender.com/graphql' from origin 'https://flux-image-generator-client.onrender.com' has been blocked by CORS policy
+```
+
+This happens because:
+1. The client is using `credentials: 'include'` in the Apollo Client configuration
+2. The server needs to have the exact client URL in its CORS configuration
+3. When using credentials, wildcards are not allowed for CORS origins
 
 ## Step 5: Test the Deployment
 
