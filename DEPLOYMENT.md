@@ -54,6 +54,16 @@ This guide provides step-by-step instructions for deploying the Flux Image Gener
      - `NEXT_PUBLIC_API_URL`: The URL of your server + `/graphql` (e.g., https://flux-image-generator-server.onrender.com/graphql)
 4. Click "Create Static Site"
 
+## Triggering Deployments
+
+You can trigger a new deployment of the client application using the Render deploy hook:
+
+```bash
+curl -X POST https://api.render.com/deploy/srv-cviqkfa4d50c73aa4e80?key=FDOoCKfApZo
+```
+
+This is useful for automating deployments or triggering a new deployment after making changes to the repository.
+
 ## Important Note About Deployment Architecture
 
 This deployment setup uses a decoupled architecture:
