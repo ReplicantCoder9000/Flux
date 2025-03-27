@@ -44,9 +44,9 @@ const startApolloServer = async () => {
 
   // If in production, serve client/build as static assets
   if (process.env.NODE_ENV === 'production') {
-    app.use(express.static(path.join(__dirname, '../client/build')));
+    // Handle API routes only, no static file serving
     app.get('*', (req, res) => {
-      res.sendFile(path.join(__dirname, '../client/build/index.html'));
+      res.status(404).json({ message: 'API endpoint not found' });
     });
   }
 

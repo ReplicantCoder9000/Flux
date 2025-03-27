@@ -99,11 +99,11 @@ A MERN-stack application for generating AI images using the black-forest-labs/fl
 The application is configured for deployment on Render with MongoDB Atlas:
 
 1. Create a MongoDB Atlas cluster and get your connection string
-2. Create a new Web Service on Render for the server
-3. Set the environment variables in the Render dashboard
-4. Create a new Static Site on Render for the client
-5. Set the build command to `cd client && npm install && npm run build`
-6. Set the publish directory to `client/build`
+2. Deploy the server as a Web Service on Render
+3. Deploy the client as a Static Site on Render
+4. Set the client's build command to `npm install && npm run build`
+5. Set the client's publish directory to `.next`
+6. For detailed deployment instructions, see [DEPLOYMENT.md](./DEPLOYMENT.md)
 
 ## API Usage
 

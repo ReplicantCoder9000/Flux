@@ -31,7 +31,7 @@ This guide provides step-by-step instructions for deploying the Flux Image Gener
    - **Start Command**: `node server.js`
    - **Plan**: Free (or choose a paid plan for production)
 5. Add the following environment variables:
-   - `PORT`: 10000 (Render assigns a port automatically, but we'll set it explicitly)
+   - `PORT`: Leave this unset. Render will automatically assign a port and set this environment variable.
    - `MONGODB_URI`: Your MongoDB Atlas connection string
    - `JWT_SECRET`: A secure random string (generate one with `openssl rand -base64 32`)
    - `JWT_EXPIRATION`: 2h
@@ -39,6 +39,7 @@ This guide provides step-by-step instructions for deploying the Flux Image Gener
    - `CLIENT_URL`: The URL of your client application (will be set after client deployment)
    - `NODE_ENV`: production
 6. Click "Create Web Service"
+7. Note: The server is configured to run in API-only mode and will not serve static files
 
 ## Step 3: Deploy the Client to Render
 
@@ -52,6 +53,15 @@ This guide provides step-by-step instructions for deploying the Flux Image Gener
    - **Advanced** > **Add Environment Variable**:
      - `NEXT_PUBLIC_API_URL`: The URL of your server + `/graphql` (e.g., https://flux-image-generator-server.onrender.com/graphql)
 4. Click "Create Static Site"
+
+## Important Note About Deployment Architecture
+
+This deployment setup uses a decoupled architecture:
+
+- The server is deployed as an API-only service that handles GraphQL requests
+- The client is deployed as a separate static site
+- The client communicates with the server via the GraphQL API endpoint
+- The server does NOT serve the client's static files
 
 ## Step 4: Update CORS Settings
 
