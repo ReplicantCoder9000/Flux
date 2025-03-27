@@ -9,6 +9,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Loader, Sparkles, Image as ImageIcon, AlertCircle, Heart, Share2, RefreshCw, Bookmark, Copy } from 'lucide-react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import AuthModal from '@/components/auth/AuthModal';
 import { useAuth } from '@/context/AuthContext';
 
@@ -104,6 +105,7 @@ const GET_USER_IMAGES = gql`
 export default function Home() {
   const [prompt, setPrompt] = useState('');
   const [style, setStyle] = useState('detailed, vibrant colors');
+  const [activeTab, setActiveTab] = useState('create');
   const [usedPrompts, setUsedPrompts] = useState<string[]>([]);
   const [favoritePrompts, setFavoritePrompts] = useState<string[]>([]);
   const [showFavoritePrompts, setShowFavoritePrompts] = useState(false);
@@ -260,6 +262,13 @@ export default function Home() {
     alert('Image URL copied to clipboard!');
   };
 
+  // Handle reusing a prompt from gallery
+  const handleReuseFromGallery = (promptToReuse: string, styleToReuse?: string) => {
+    setPrompt(promptToReuse);
+    if (styleToReuse) setStyle(styleToReuse);
+    setActiveTab('create');
+  };
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-4 md:p-24">
       <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm">
@@ -268,7 +277,7 @@ export default function Home() {
           <AuthModal />
         </div>
         
-        <Tabs defaultValue="create" className="w-full">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="create">Create</TabsTrigger>
             <TabsTrigger value="gallery">Gallery</TabsTrigger>
@@ -524,14 +533,7 @@ export default function Home() {
                               type="button" 
                               variant="secondary" 
                               size="sm"
-                              onClick={() => {
-                                setPrompt(image.prompt);
-                                if (image.style) setStyle(image.style);
-                                const createTab = document.querySelector('[value="create"]');
-                                if (createTab && createTab instanceof HTMLElement) {
-                                  createTab.click();
-                                }
-                              }}
+                              onClick={() => handleReuseFromGallery(image.prompt, image.style)}
                             >
                               <RefreshCw className="h-3 w-3 mr-1" />
                               Reuse
