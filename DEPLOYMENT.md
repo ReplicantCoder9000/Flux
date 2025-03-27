@@ -50,9 +50,17 @@ This guide provides step-by-step instructions for deploying the Flux Image Gener
    - **Root Directory**: .
    - **Build Command**: `cd src/client && npm install && npm run build`
    - **Publish Directory**: `src/client/out`
+   - **Publish Directory Format**: Static Site
    - **Advanced** > **Add Environment Variable**:
      - `NEXT_PUBLIC_API_URL`: The URL of your server + `/graphql` (e.g., https://flux-image-generator-server.onrender.com/graphql)
 4. Click "Create Static Site"
+
+### Important Static Site Configuration Notes
+
+- The Next.js application is configured for static export with `output: 'export'` in next.config.js
+- We've added `trailingSlash: true` to ensure proper routing with static files
+- Fallback HTML files are provided in the public directory for better error handling
+- Make sure the static site is properly built before deployment by checking the build logs
 
 ## Triggering Deployments
 
