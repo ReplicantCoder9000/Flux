@@ -105,6 +105,52 @@ The application is configured for deployment on Render with MongoDB Atlas:
 5. Set the client's publish directory to `src/client/out`
 6. For detailed deployment instructions, see [DEPLOYMENT.md](./DEPLOYMENT.md)
 
+### CI/CD Workflow
+
+The project uses GitHub Actions for CI/CD with manual Render deployments triggered by deploy hooks:
+
+#### How It Works
+
+1. When code is pushed to the main branch, GitHub Actions runs the CI/CD workflow
+2. The workflow tests both server and client code
+3. If all tests pass, it triggers Render deploy hooks to start the deployment
+4. Render deploys the application only after passing all tests
+
+#### Setting Up Render Deploy Hooks
+
+1. Log in to your Render dashboard
+2. Navigate to your server service
+3. Go to "Settings" > "Deploy Hooks"
+4. Create a new deploy hook and copy the URL
+5. Repeat for your client service
+
+#### Adding Deploy Hooks to GitHub Secrets
+
+1. Go to your GitHub repository
+2. Navigate to "Settings" > "Secrets and variables" > "Actions"
+3. Add new repository secrets:
+   - `RENDER_DEPLOY_HOOK_SERVER` with the server deploy hook URL
+   - `RENDER_DEPLOY_HOOK_CLIENT` with the client deploy hook URL
+
+#### Local Testing
+
+Run the same tests locally before pushing:
+
+**Server:**
+```bash
+cd server
+npm run test:ci
+```
+
+**Client:**
+```bash
+cd src/client
+npm run test:ci
+```
+
+#### Manual Workflow Trigger
+You can manually trigger the workflow from the "Actions" tab in your GitHub repository.
+
 ## API Usage
 
 The application uses GraphQL for all API interactions. Here's an example of how to generate an image using the Replicate API:
