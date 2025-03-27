@@ -104,8 +104,10 @@ const GET_USER_IMAGES = gql`
 export default function Home() {
   const [prompt, setPrompt] = useState('');
   const [style, setStyle] = useState('detailed, vibrant colors');
+  const [usedPrompts, setUsedPrompts] = useState<string[]>([]);
   const [favoritePrompts, setFavoritePrompts] = useState<string[]>([]);
   const [showFavoritePrompts, setShowFavoritePrompts] = useState(false);
+  const [showUsedPrompts, setShowUsedPrompts] = useState(false);
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const { isLoggedIn, user } = useAuth();
@@ -185,6 +187,11 @@ export default function Home() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!prompt) return;
+    
+    // Add prompt to used prompts if not already there
+    if (!usedPrompts.includes(prompt)) {
+      setUsedPrompts(prev => [prompt, ...prev.slice(0, 9)]); // Keep only the 10 most recent prompts
+    }
 
     setIsLoading(true);
     setGeneratedImage(null);
@@ -229,7 +236,7 @@ export default function Home() {
   // Handle using a favorite prompt
   const handleUsePrompt = (selectedPrompt: string) => {
     setPrompt(selectedPrompt);
-    setShowFavoritePrompts(false);
+    // Keep the prompts visible
   };
 
   // Handle revising an image (regenerate with the same prompt)
@@ -294,6 +301,54 @@ export default function Home() {
                         className="min-h-[100px]"
                         required
                       />
+                      
+                      {/* Used Prompts Section */}
+                      {isLoggedIn && usedPrompts.length > 0 && (
+                        <div className="mt-2">
+                          <Button 
+                            type="button" 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => setShowUsedPrompts(!showUsedPrompts)}
+                          >
+                            <RefreshCw className="h-4 w-4 mr-2" />
+                            {showUsedPrompts ? 'Hide Recent Prompts' : 'Show Recent Prompts'}
+                          </Button>
+                          
+                          {showUsedPrompts && (
+                            <div className="mt-2 p-2 border rounded-md max-h-40 overflow-y-auto">
+                              <p className="text-sm font-medium mb-2">Your Recent Prompts:</p>
+                              <ul className="space-y-1">
+                                {usedPrompts.map((usedPrompt, index) => (
+                                  <li key={`used-${index}`} className="flex items-center justify-between text-sm p-1 hover:bg-gray-100 rounded">
+                                    <span className="truncate flex-1">{usedPrompt}</span>
+                                    <div className="flex space-x-1">
+                                      <Button 
+                                        type="button" 
+                                        variant="ghost" 
+                                        size="sm"
+                                        onClick={() => handleUsePrompt(usedPrompt)}
+                                      >
+                                        <Copy className="h-3 w-3" />
+                                      </Button>
+                                      <Button 
+                                        type="button" 
+                                        variant="ghost" 
+                                        size="sm"
+                                        onClick={() => handleSavePrompt()}
+                                      >
+                                        <Bookmark className="h-3 w-3" />
+                                      </Button>
+                                    </div>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                      
+                      {/* Favorite Prompts Section */}
                       {isLoggedIn && favoritePrompts.length > 0 && (
                         <div className="mt-2">
                           <Button 
@@ -311,7 +366,7 @@ export default function Home() {
                               <p className="text-sm font-medium mb-2">Your Saved Prompts:</p>
                               <ul className="space-y-1">
                                 {favoritePrompts.map((savedPrompt, index) => (
-                                  <li key={index} className="flex items-center justify-between text-sm p-1 hover:bg-gray-100 rounded">
+                                  <li key={`fav-${index}`} className="flex items-center justify-between text-sm p-1 hover:bg-gray-100 rounded">
                                     <span className="truncate flex-1">{savedPrompt}</span>
                                     <div className="flex space-x-1">
                                       <Button 
@@ -444,52 +499,62 @@ export default function Home() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {imagesData.userImages.map((image: ImageType) => (
                       <div key={image._id} className="relative aspect-square">
-                        <div className="group relative w-full h-full">
+                        <div className="group relative w-full h-full overflow-hidden">
                           <Image
                             src={image.imageUrl}
                             alt={image.prompt}
                             fill
                             className="object-cover rounded-md"
                           />
-                          <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-300 flex items-end justify-center p-4 opacity-0 group-hover:opacity-100">
-                            <div className="text-white text-sm">
-                              <p className="font-medium truncate">{image.prompt}</p>
-                              <p className="text-xs opacity-80">{image.createdAt ? new Date(image.createdAt).toLocaleDateString() : 'Unknown date'}</p>
-                              <div className="flex space-x-2 mt-2">
-                                <Button 
-                                  type="button" 
-                                  variant="secondary" 
-                                  size="sm"
-                                  onClick={() => {
-                                    setPrompt(image.prompt);
-                                    if (image.style) setStyle(image.style);
-                                    document.querySelector('[value="create"]')?.dispatchEvent(new Event('click'));
-                                  }}
-                                >
-                                  <RefreshCw className="h-3 w-3 mr-1" />
-                                  Reuse
-                                </Button>
-                                <Button 
-                                  type="button" 
-                                  variant="secondary" 
-                                  size="sm"
-                                  onClick={() => {
-                                    // Create a temporary input element
-                                    const input = document.createElement('input');
-                                    input.value = image.imageUrl;
-                                    document.body.appendChild(input);
-                                    input.select();
-                                    document.execCommand('copy');
-                                    document.body.removeChild(input);
-                                    
-                                    alert('Image URL copied to clipboard!');
-                                  }}
-                                >
-                                  <Share2 className="h-3 w-3 mr-1" />
-                                  Share
-                                </Button>
-                              </div>
+                          {/* Dark overlay with prompt info */}
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent p-4 flex flex-col justify-end opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <div className="text-white">
+                              <p className="font-medium text-sm line-clamp-2">{image.prompt}</p>
+                              <p className="text-xs opacity-80 mb-3">
+                                {image.createdAt 
+                                  ? new Date(parseInt(image.createdAt)).toLocaleDateString() 
+                                  : 'Unknown date'}
+                              </p>
                             </div>
+                          </div>
+                          
+                          {/* Action buttons */}
+                          <div className="absolute bottom-4 left-0 right-0 flex justify-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <Button 
+                              type="button" 
+                              variant="secondary" 
+                              size="sm"
+                              onClick={() => {
+                                setPrompt(image.prompt);
+                                if (image.style) setStyle(image.style);
+                                const createTab = document.querySelector('[value="create"]');
+                                if (createTab && createTab instanceof HTMLElement) {
+                                  createTab.click();
+                                }
+                              }}
+                            >
+                              <RefreshCw className="h-3 w-3 mr-1" />
+                              Reuse
+                            </Button>
+                            <Button 
+                              type="button" 
+                              variant="secondary" 
+                              size="sm"
+                              onClick={() => {
+                                // Create a temporary input element
+                                const input = document.createElement('input');
+                                input.value = image.imageUrl;
+                                document.body.appendChild(input);
+                                input.select();
+                                document.execCommand('copy');
+                                document.body.removeChild(input);
+                                
+                                alert('Image URL copied to clipboard!');
+                              }}
+                            >
+                              <Share2 className="h-3 w-3 mr-1" />
+                              Share
+                            </Button>
                           </div>
                         </div>
                       </div>
