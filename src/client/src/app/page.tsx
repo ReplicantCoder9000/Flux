@@ -119,10 +119,11 @@ export default function Home() {
                 {generatedImage && (
                   <div className="mt-4 relative w-full aspect-square max-w-md">
                     <Image
+                      width={500}
+                      height={500}
                       src={generatedImage}
                       alt="Generated image"
-                      fill
-                      className="rounded-lg object-cover"
+                      className="rounded-lg object-cover w-full h-full"
                     />
                   </div>
                 )}
