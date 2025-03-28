@@ -30,20 +30,15 @@ jobs:
     - name: Run server tests
       run: cd server && npm test || echo "Tests not configured, skipping"
     
-    - name: Run image generation test
-      run: cd server && node scripts/test-image-generation.js
+    - name: Run CI image generation test
+      run: cd server && node scripts/ci-test-image-generation.js
       env:
         REPLICATE_API_TOKEN: ${{ secrets.REPLICATE_API_TOKEN }}
     
     - name: API Health Check
-      run: |
-        echo "Running API health check..."
-        cd server && npm install -g wait-on
-        npm start & wait-on http://localhost:3001/graphql
-        curl -X POST http://localhost:3001/graphql \
-          -H "Content-Type: application/json" \
-          -d '{"query":"{ __schema { types { name } } }"}'
+      run: cd server && node scripts/ci-api-health-check.js
       env:
+        PORT: 3001
         MONGODB_URI: ${{ secrets.MONGODB_URI }}
         JWT_SECRET: ${{ secrets.JWT_SECRET }}
         REPLICATE_API_TOKEN: ${{ secrets.REPLICATE_API_TOKEN }}
