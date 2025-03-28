@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Loader, Sparkles, Image as ImageIcon, AlertCircle, Heart, Share2, RefreshCw, Bookmark, Copy } from 'lucide-react';
+import { Loader, Sparkles, Image as ImageIcon, AlertCircle, Heart, Share2, RefreshCw, Bookmark, Copy, Download } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import AuthModal from '@/components/auth/AuthModal';
@@ -269,11 +269,22 @@ export default function Home() {
     setActiveTab('create');
   };
 
+  // Handle downloading an image
+  const handleDownloadImage = (imageUrl: string, promptText: string = 'flux-image') => {
+    // Create a temporary anchor element
+    const link = document.createElement('a');
+    link.href = imageUrl;
+    link.download = `${promptText.substring(0, 20).replace(/[^a-z0-9]/gi, '-').toLowerCase()}-${Date.now()}.png`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-4 md:p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-4xl font-bold">Flux Image Generator</h1>
+    <main className="flex min-h-screen flex-col items-center justify-between p-3 sm:p-6 md:p-12 lg:p-24">
+      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:text-base">
+        <div className="flex flex-col sm:flex-row justify-between items-center mb-4 sm:mb-8 gap-3">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center sm:text-left">Flux Image Generator</h1>
           <AuthModal />
         </div>
         
@@ -434,10 +445,10 @@ export default function Home() {
                       height={512}
                       src={generatedImage}
                       alt="Generated image"
-                      className="rounded-lg object-cover w-full h-full"
+                      className="rounded-lg object-contain w-full h-full"
                     />
                     {isLoggedIn && (
-                      <div className="absolute bottom-2 right-2 flex space-x-2">
+                      <div className="absolute bottom-2 right-2 flex flex-wrap justify-end gap-2">
                         <Button 
                           type="button" 
                           variant="secondary" 
@@ -464,6 +475,15 @@ export default function Home() {
                         >
                           <Share2 className="h-4 w-4 mr-1" />
                           Share
+                        </Button>
+                        <Button 
+                          type="button" 
+                          variant="secondary" 
+                          size="sm"
+                          onClick={() => handleDownloadImage(generatedImage, prompt)}
+                        >
+                          <Download className="h-4 w-4 mr-1" />
+                          Download
                         </Button>
                       </div>
                     )}
@@ -505,7 +525,7 @@ export default function Home() {
                     Error loading images. Please try again.
                   </div>
                 ) : imagesData?.userImages?.length ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {imagesData.userImages.map((image: ImageType) => (
                       <div key={image._id} className="relative aspect-square">
                         <div className="group relative w-full h-full overflow-hidden">
@@ -528,7 +548,7 @@ export default function Home() {
                           </div>
                           
                           {/* Action buttons */}
-                          <div className="absolute bottom-4 left-0 right-0 flex justify-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                          <div className="absolute bottom-4 left-0 right-0 flex flex-wrap justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                             <Button 
                               type="button" 
                               variant="secondary" 
@@ -556,6 +576,15 @@ export default function Home() {
                             >
                               <Share2 className="h-3 w-3 mr-1" />
                               Share
+                            </Button>
+                            <Button 
+                              type="button" 
+                              variant="secondary" 
+                              size="sm"
+                              onClick={() => handleDownloadImage(image.imageUrl, image.prompt)}
+                            >
+                              <Download className="h-3 w-3 mr-1" />
+                              Download
                             </Button>
                           </div>
                         </div>
