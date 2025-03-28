@@ -104,7 +104,7 @@ const GET_USER_IMAGES = gql`
 
 export default function Home() {
   const [prompt, setPrompt] = useState('');
-  const [style, setStyle] = useState('detailed, vibrant colors');
+  const [style, setStyle] = useState('photorealistic, high resolution, 8K, hyperdetailed, professional photography, sharp focus, DSLR, natural lighting, cinematic, HDR');
   const [activeTab, setActiveTab] = useState('create');
   const [usedPrompts, setUsedPrompts] = useState<string[]>([]);
   const [favoritePrompts, setFavoritePrompts] = useState<string[]>([]); // Keep for other functionality
@@ -369,7 +369,7 @@ export default function Home() {
                     </div>
                     <div className="space-y-2">
                       <Input
-                        placeholder="Style (e.g., detailed, vibrant colors)"
+                        placeholder="Style (e.g., photorealistic, high resolution, sharp focus)"
                         value={style}
                         onChange={(e) => setStyle(e.target.value)}
                       />
