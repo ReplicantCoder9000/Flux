@@ -280,24 +280,24 @@ export default function Home() {
   };
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-3 sm:p-6 md:p-12 lg:p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:text-base">
-        <div className="flex flex-col sm:flex-row justify-between items-center mb-4 sm:mb-8 gap-3">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center sm:text-left">Flux Image Generator</h1>
+    <main className="flex min-h-screen flex-col items-center justify-between p-3 sm:p-6 md:p-12 lg:p-24 bg-gradient-to-b from-background to-secondary/20">
+      <div className="z-10 max-w-5xl w-full items-center justify-between text-sm lg:text-base">
+        <div className="flex flex-col sm:flex-row justify-between items-center mb-6 sm:mb-10 gap-3">
+          <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold text-center sm:text-left font-heading bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent animate-fade-in">Flux Image Generator</h1>
           <AuthModal />
         </div>
         
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full animate-slide-up">
+          <TabsList className="grid w-full grid-cols-2 mb-6">
             <TabsTrigger value="create">Create</TabsTrigger>
             <TabsTrigger value="gallery">Gallery</TabsTrigger>
           </TabsList>
           
           <TabsContent value="create">
-            <Card>
-              <CardHeader>
-                <CardTitle>Generate an Image</CardTitle>
-                <CardDescription>
+            <Card className="border border-border/40 shadow-card hover:shadow-card-hover transition-all duration-300">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-2xl font-heading">Generate an Image</CardTitle>
+                <CardDescription className="text-base">
                   Enter a prompt to generate an AI image using the Flux Schnell model.
                 </CardDescription>
               </CardHeader>
@@ -317,7 +317,7 @@ export default function Home() {
                         placeholder="Describe the image you want to generate..."
                         value={prompt}
                         onChange={(e) => setPrompt(e.target.value)}
-                        className="min-h-[100px]"
+                        className="min-h-[120px] text-base resize-none focus:ring-2 focus:ring-primary/50 transition-all"
                         required
                       />
                       
@@ -372,9 +372,14 @@ export default function Home() {
                         placeholder="Style (e.g., photorealistic, high resolution, sharp focus)"
                         value={style}
                         onChange={(e) => setStyle(e.target.value)}
+                        className="focus:ring-2 focus:ring-primary/50 transition-all"
                       />
                     </div>
-                    <Button type="submit" disabled={isLoading || !prompt} className="w-full">
+                    <Button 
+                      type="submit" 
+                      disabled={isLoading || !prompt} 
+                      className="w-full text-base py-6 font-medium hover:scale-[1.01] transition-transform"
+                    >
                       {isLoading ? (
                         <>
                           <Loader className="mr-2 h-4 w-4 animate-spin" />
@@ -392,16 +397,16 @@ export default function Home() {
               </CardContent>
               <CardFooter className="flex justify-center">
                 {generatedImage && (
-                  <div className="mt-4 relative w-full aspect-square max-w-md">
+                  <div className="mt-4 relative w-full aspect-square max-w-md animate-fade-in rounded-lg overflow-hidden shadow-lg">
                     <Image
                       width={512}
                       height={512}
                       src={generatedImage}
                       alt="Generated image"
-                      className="rounded-lg object-contain w-full h-full"
+                      className="rounded-lg object-contain w-full h-full transition-all duration-500"
                     />
                     {isLoggedIn && (
-                      <div className="absolute bottom-2 right-2 flex flex-wrap justify-end gap-2">
+                      <div className="absolute bottom-4 right-4 flex flex-wrap justify-end gap-2">
                         <Button 
                           type="button" 
                           variant="secondary" 
@@ -444,8 +449,8 @@ export default function Home() {
                 )}
                 {!generatedImage && !isLoading && (
                   <div className="flex flex-col items-center justify-center text-muted-foreground">
-                    <ImageIcon className="h-16 w-16 mb-2" />
-                    <p>Your generated image will appear here</p>
+                    <ImageIcon className="h-20 w-20 mb-3 opacity-70 animate-pulse-gentle" />
+                    <p className="text-base">Your generated image will appear here</p>
                   </div>
                 )}
               </CardFooter>
@@ -453,10 +458,10 @@ export default function Home() {
           </TabsContent>
           
           <TabsContent value="gallery">
-            <Card>
-              <CardHeader>
-                <CardTitle>Your Gallery</CardTitle>
-                <CardDescription>
+            <Card className="border border-border/40 shadow-card hover:shadow-card-hover transition-all duration-300">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-2xl font-heading">Your Gallery</CardTitle>
+                <CardDescription className="text-base">
                   View and manage your generated images.
                 </CardDescription>
               </CardHeader>
@@ -480,20 +485,20 @@ export default function Home() {
                 ) : imagesData?.userImages?.length ? (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {imagesData.userImages.map((image: ImageType) => (
-                      <div key={image._id} className="relative aspect-square">
-                        <div className="group relative w-full h-full overflow-hidden">
+                      <div key={image._id} className="relative aspect-square animate-fade-in">
+                        <div className="group relative w-full h-full overflow-hidden rounded-lg shadow-md hover:shadow-lg transition-all duration-300 hover:scale-[1.01]">
                           <Image
                             src={image.imageUrl}
                             alt={image.prompt}
                             fill
-                            className="object-cover rounded-md"
+                            className="object-cover rounded-lg"
                           />
                           {/* Dark overlay with prompt info */}
                           <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent p-4 flex flex-col justify-between opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                             <div></div> {/* Empty div for flex justify-between */}
                             <div className="text-white">
-                              <p className="font-medium text-sm line-clamp-2 mb-1">{image.prompt}</p>
-                              <p className="text-xs opacity-80 mb-16"> {/* Added more bottom margin to make space for buttons */}
+                              <p className="font-medium text-base line-clamp-2 mb-1">{image.prompt}</p>
+                              <p className="text-sm opacity-80 mb-16"> {/* Added more bottom margin to make space for buttons */}
                                 {image.createdAt 
                                   ? new Date(parseInt(image.createdAt)).toLocaleDateString() 
                                   : 'Unknown date'}
@@ -502,7 +507,7 @@ export default function Home() {
                           </div>
                           
                           {/* Action buttons */}
-                          <div className="absolute bottom-4 left-0 right-0 flex flex-wrap justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"> {/* Added z-10 to ensure buttons are above text */}
+                          <div className="absolute bottom-4 left-0 right-0 flex flex-wrap justify-center gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 z-10 transform translate-y-2 group-hover:translate-y-0"> {/* Added z-10 to ensure buttons are above text */}
                             <Button 
                               type="button" 
                               variant="secondary" 
