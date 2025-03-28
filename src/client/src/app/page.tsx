@@ -12,6 +12,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import AuthModal from '@/components/auth/AuthModal';
 import { useAuth } from '@/context/AuthContext';
+import { triggerConfetti, celebrateImageGeneration } from '@/lib/confetti';
 
 // Import types
 import type { GenerateImageData, Image as ImageType } from '../types';
@@ -166,6 +167,9 @@ export default function Home() {
     onCompleted: (data: GenerateImageData) => {
       setGeneratedImage(data.generateImage.imageUrl);
       
+      // Celebrate with confetti when image is successfully generated
+      celebrateImageGeneration();
+      
       // Save the generated image to the database
       if (isLoggedIn && data.generateImage.imageUrl && data.generateImage.predictionId) {
         saveImage({
@@ -196,6 +200,9 @@ export default function Home() {
 
     setIsLoading(true);
     setGeneratedImage(null);
+
+    // Trigger confetti animation when Generate button is clicked
+    triggerConfetti();
 
     try {
       await generateImage({
@@ -282,8 +289,8 @@ export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-3 sm:p-6 md:p-12 lg:p-24 bg-gradient-to-b from-background to-secondary/20">
       <div className="z-10 max-w-5xl w-full items-center justify-between text-sm lg:text-base">
-        <div className="flex flex-col sm:flex-row justify-between items-center mb-6 sm:mb-10 gap-3">
-          <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold text-center sm:text-left font-heading bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent animate-fade-in">Flux Image Generator</h1>
+        <div className="flex flex-col sm:flex-row justify-between items-center mb-6 sm:mb-10 gap-3 w-full">
+          <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold text-center sm:text-left font-heading bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent animate-fade-in w-full sm:w-auto overflow-visible py-2">Flux Image Generator</h1>
           <AuthModal />
         </div>
         
@@ -399,8 +406,8 @@ export default function Home() {
                 {generatedImage && (
                   <div className="mt-4 relative w-full aspect-square max-w-md animate-fade-in rounded-lg overflow-hidden shadow-lg">
                     <Image
-                      width={512}
-                      height={512}
+                      width={600}
+                      height={600}
                       src={generatedImage}
                       alt="Generated image"
                       className="rounded-lg object-contain w-full h-full transition-all duration-500"
@@ -496,9 +503,9 @@ export default function Home() {
                           {/* Dark overlay with prompt info */}
                           <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent p-4 flex flex-col justify-between opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                             <div></div> {/* Empty div for flex justify-between */}
-                            <div className="text-white">
-                              <p className="font-medium text-base line-clamp-2 mb-1">{image.prompt}</p>
-                              <p className="text-sm opacity-80 mb-16"> {/* Added more bottom margin to make space for buttons */}
+                            <div className="text-white pb-20"> {/* Added padding at bottom instead of margin to ensure text doesn't get cut off */}
+                              <p className="font-medium text-base line-clamp-3 mb-1">{image.prompt}</p>
+                              <p className="text-sm opacity-80">
                                 {image.createdAt 
                                   ? new Date(parseInt(image.createdAt)).toLocaleDateString() 
                                   : 'Unknown date'}
@@ -507,7 +514,7 @@ export default function Home() {
                           </div>
                           
                           {/* Action buttons */}
-                          <div className="absolute bottom-4 left-0 right-0 flex flex-wrap justify-center gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 z-10 transform translate-y-2 group-hover:translate-y-0"> {/* Added z-10 to ensure buttons are above text */}
+                          <div className="absolute bottom-4 left-0 right-0 flex flex-wrap justify-center gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 z-10 transform translate-y-2 group-hover:translate-y-0 bg-transparent"> {/* Added z-10 to ensure buttons are above text */}
                             <Button 
                               type="button" 
                               variant="secondary" 
