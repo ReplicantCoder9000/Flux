@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Loader, Sparkles, Image as ImageIcon, AlertCircle, Heart, Share2, RefreshCw, Bookmark, Copy, Download } from 'lucide-react';
+import { Loader, Sparkles, Image as ImageIcon, AlertCircle, Share2, RefreshCw, Bookmark, Copy, Download } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import AuthModal from '@/components/auth/AuthModal';
@@ -107,8 +107,7 @@ export default function Home() {
   const [style, setStyle] = useState('detailed, vibrant colors');
   const [activeTab, setActiveTab] = useState('create');
   const [usedPrompts, setUsedPrompts] = useState<string[]>([]);
-  const [favoritePrompts, setFavoritePrompts] = useState<string[]>([]);
-  const [showFavoritePrompts, setShowFavoritePrompts] = useState(false);
+  const [favoritePrompts, setFavoritePrompts] = useState<string[]>([]); // Keep for other functionality
   const [showUsedPrompts, setShowUsedPrompts] = useState(false);
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -358,52 +357,6 @@ export default function Home() {
                                         onClick={() => handleSavePrompt()}
                                       >
                                         <Bookmark className="h-3 w-3" />
-                                      </Button>
-                                    </div>
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          )}
-                        </div>
-                      )}
-                      
-                      {/* Favorite Prompts Section */}
-                      {isLoggedIn && favoritePrompts.length > 0 && (
-                        <div className="mt-2">
-                          <Button 
-                            type="button" 
-                            variant="outline" 
-                            size="sm"
-                            onClick={() => setShowFavoritePrompts(!showFavoritePrompts)}
-                          >
-                            <Bookmark className="h-4 w-4 mr-2" />
-                            {showFavoritePrompts ? 'Hide Saved Prompts' : 'Show Saved Prompts'}
-                          </Button>
-                          
-                          {showFavoritePrompts && (
-                            <div className="mt-2 p-2 border rounded-md max-h-40 overflow-y-auto">
-                              <p className="text-sm font-medium mb-2">Your Saved Prompts:</p>
-                              <ul className="space-y-1">
-                                {favoritePrompts.map((savedPrompt, index) => (
-                                  <li key={`fav-${index}`} className="flex items-center justify-between text-sm p-1 hover:bg-gray-100 rounded">
-                                    <span className="truncate flex-1">{savedPrompt}</span>
-                                    <div className="flex space-x-1">
-                                      <Button 
-                                        type="button" 
-                                        variant="ghost" 
-                                        size="sm"
-                                        onClick={() => handleUsePrompt(savedPrompt)}
-                                      >
-                                        <Copy className="h-3 w-3" />
-                                      </Button>
-                                      <Button 
-                                        type="button" 
-                                        variant="ghost" 
-                                        size="sm"
-                                        onClick={() => handleRemovePrompt(savedPrompt)}
-                                      >
-                                        <Heart className="h-3 w-3 fill-current" />
                                       </Button>
                                     </div>
                                   </li>
