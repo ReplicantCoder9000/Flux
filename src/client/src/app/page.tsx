@@ -489,10 +489,11 @@ export default function Home() {
                             className="object-cover rounded-md"
                           />
                           {/* Dark overlay with prompt info */}
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent p-4 flex flex-col justify-end opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent p-4 flex flex-col justify-between opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <div></div> {/* Empty div for flex justify-between */}
                             <div className="text-white">
-                              <p className="font-medium text-sm line-clamp-2">{image.prompt}</p>
-                              <p className="text-xs opacity-80 mb-3">
+                              <p className="font-medium text-sm line-clamp-2 mb-1">{image.prompt}</p>
+                              <p className="text-xs opacity-80 mb-16"> {/* Added more bottom margin to make space for buttons */}
                                 {image.createdAt 
                                   ? new Date(parseInt(image.createdAt)).toLocaleDateString() 
                                   : 'Unknown date'}
@@ -501,7 +502,7 @@ export default function Home() {
                           </div>
                           
                           {/* Action buttons */}
-                          <div className="absolute bottom-4 left-0 right-0 flex flex-wrap justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                          <div className="absolute bottom-4 left-0 right-0 flex flex-wrap justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"> {/* Added z-10 to ensure buttons are above text */}
                             <Button 
                               type="button" 
                               variant="secondary" 
